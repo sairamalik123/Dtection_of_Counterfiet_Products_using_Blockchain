@@ -32,7 +32,7 @@ const Profile = () => {
                 setRole(res.data[0].role);
                 setWebsite(res?.data[0].website);
                 setLocation(res?.data[0].location);
-                // setImage(res.data.image);
+                setImage(res.data.image);
             })
     }
 
