@@ -134,7 +134,7 @@ import useAuth from '../../hooks/useAuth';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 const ScannerPage = () => {
-    const CONTRACT_ADDRESS  = '0x210e88E9eACAA2B7C55341EF1f28AA6659bD7a8C';
+    const CONTRACT_ADDRESS  = '0xd30f45A86f17E011f54e05465BCcB5Ee82411947';
     const [qrData, setQrData] = useState('');
 
     const { auth } = useAuth();

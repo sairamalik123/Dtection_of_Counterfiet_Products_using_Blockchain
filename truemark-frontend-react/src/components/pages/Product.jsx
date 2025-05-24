@@ -757,6 +757,152 @@
 
 
 // Product.jsx
+// import { Box, Paper, Avatar, Typography, Button } from '@mui/material';
+// import Timeline from '@mui/lab/Timeline';
+// import TimelineItem from '@mui/lab/TimelineItem';
+// import TimelineSeparator from '@mui/lab/TimelineSeparator';
+// import TimelineConnector from '@mui/lab/TimelineConnector';
+// import TimelineContent from '@mui/lab/TimelineContent';
+// import TimelineDot from '@mui/lab/TimelineDot';
+// import TimelineOppositeContent from '@mui/lab/TimelineOppositeContent';
+// import dayjs from 'dayjs';
+// import { useEffect, useState } from 'react';
+// import { useLocation, useNavigate } from 'react-router-dom';
+// import { ethers } from 'ethers';
+// import abi from '../../utils/Truemark.json';
+// import bgImg from '../../img/bg.png';
+
+// const CONTRACT_ADDRESS = '0x210e88E9eACAA2B7C55341EF1f28AA6659bD7a8C';
+// const CONTRACT_ABI = abi.abi;
+
+// const Product = () => {
+//   const [currentAccount, setCurrentAccount] = useState('');
+//   const [serialNumber, setSerialNumber] = useState('');
+//   const [name, setName] = useState('P');
+//   const [brand, setBrand] = useState('');
+//   const [description, setDescription] = useState('');
+//   const [image, setImage] = useState({ filepreview: null });
+//   const [history, setHistory] = useState([]);
+//   const [isSold, setIsSold] = useState(false);
+
+//   const location = useLocation();
+//   const navigate = useNavigate();
+//   const qrData = location.state?.qrData;
+
+//   useEffect(() => {
+//     if (qrData) {
+//       handleScan(qrData);
+//     }
+//   }, [qrData]);
+
+//   const getImage = async (imageName) => {
+//     setImage({
+//       filepreview: `http://localhost:5000/file/product/${imageName}`
+//     });
+//   };
+
+//   const handleScan = async (qrData) => {
+//     const [contractAddress, serial] = qrData.split(',');
+//     setSerialNumber(serial);
+
+//     if (contractAddress === CONTRACT_ADDRESS) {
+//       try {
+//         const { ethereum } = window;
+//         if (ethereum) {
+//           const provider = new ethers.providers.Web3Provider(ethereum);
+//           const signer = provider.getSigner();
+//           const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
+//           const product = await contract.getProduct(serial);
+//           populateProductData(product);
+//         }
+//       } catch (error) {
+//         console.error(error);
+//       }
+//     }
+//   };
+
+//   const populateProductData = (product) => {
+//     setName(product[0]);
+//     setBrand(product[1]);
+//     setDescription(product[2]?.replace(/;/g, ','));
+//     getImage(product[4]);
+
+//     const hist = product[5].map((entry) => {
+//       const actor = entry[1];
+//       const location = entry[2]?.replace(/;/g, ',');
+//       const timestamp = Number(entry[3]);
+//       const isSoldFlag = entry[4];
+
+//       if (isSoldFlag) setIsSold(true);
+
+//       return { actor, location, timestamp };
+//     });
+
+//     setHistory(hist);
+//   };
+
+//   const handleBack = () => navigate(-2);
+
+//   return (
+//     <Box sx={{
+//       backgroundImage: `url(${bgImg})`,
+//       minHeight: "100vh",
+//       backgroundSize: 'cover',
+//       paddingTop: "5%",
+//       paddingBottom: "5%",
+//     }}>
+//       <Paper elevation={3} sx={{
+//         maxWidth: 600,
+//         margin: "auto",
+//         padding: 4,
+//         backgroundColor: "#f0f4fa"
+//       }}>
+//         <Typography variant="h4" align="center" gutterBottom>Product Details</Typography>
+//         <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 4 }}>
+//           <Avatar alt={name} src={image.filepreview} sx={{ width: 100, height: 100, marginRight: 2 }} />
+//           <Box>
+//             <Typography variant="h6">{name}</Typography>
+//             <Typography>Serial Number: {serialNumber}</Typography>
+//             <Typography>Description: {description}</Typography>
+//             <Typography>Brand: {brand}</Typography>
+//           </Box>
+//         </Box>
+
+//         <Typography variant="h5" align="center" gutterBottom>Product History</Typography>
+//         <Timeline position="alternate">
+//           {history.map((item, index) => (
+//             <TimelineItem key={index}>
+//               <TimelineOppositeContent color="textSecondary">
+//                 {dayjs(item.timestamp * 1000).format('DD MMM YYYY - hh:mm A')}
+//               </TimelineOppositeContent>
+//               <TimelineSeparator>
+//                 <TimelineDot />
+//                 {index !== history.length - 1 && <TimelineConnector />}
+//               </TimelineSeparator>
+//               <TimelineContent>
+//                 <Typography>Actor: {item.actor}</Typography>
+//                 <Typography>Location: {item.location}</Typography>
+//               </TimelineContent>
+//             </TimelineItem>
+//           ))}
+//         </Timeline>
+
+//         <Typography variant="body2" align="center" sx={{ mt: 3 }}>
+//           Product Sold: <strong>{isSold ? 'Yes' : 'No'}</strong>
+//         </Typography>
+
+//         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
+//           <Button variant="contained" onClick={handleBack}>Back</Button>
+//         </Box>
+//       </Paper>
+//     </Box>
+//   );
+// };
+
+// export default Product;
+
+
+
 import { Box, Paper, Avatar, Typography, Button } from '@mui/material';
 import Timeline from '@mui/lab/Timeline';
 import TimelineItem from '@mui/lab/TimelineItem';
@@ -772,18 +918,19 @@ import { ethers } from 'ethers';
 import abi from '../../utils/Truemark.json';
 import bgImg from '../../img/bg.png';
 
-const CONTRACT_ADDRESS = '0x210e88E9eACAA2B7C55341EF1f28AA6659bD7a8C';
+const CONTRACT_ADDRESS = '0xd30f45A86f17E011f54e05465BCcB5Ee82411947';
 const CONTRACT_ABI = abi.abi;
 
 const Product = () => {
   const [currentAccount, setCurrentAccount] = useState('');
   const [serialNumber, setSerialNumber] = useState('');
-  const [name, setName] = useState('P');
+  const [name, setName] = useState('');
   const [brand, setBrand] = useState('');
   const [description, setDescription] = useState('');
   const [image, setImage] = useState({ filepreview: null });
   const [history, setHistory] = useState([]);
   const [isSold, setIsSold] = useState(false);
+  const [loading, setLoading] = useState(true); // <-- Added loading state
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -802,6 +949,7 @@ const Product = () => {
   };
 
   const handleScan = async (qrData) => {
+    setLoading(true); // Start loading
     const [contractAddress, serial] = qrData.split(',');
     setSerialNumber(serial);
 
@@ -817,6 +965,7 @@ const Product = () => {
         }
       } catch (error) {
         console.error(error);
+        setLoading(false);
       }
     }
   };
@@ -839,6 +988,7 @@ const Product = () => {
     });
 
     setHistory(hist);
+    setLoading(false); // End loading
   };
 
   const handleBack = () => navigate(-2);
@@ -858,42 +1008,49 @@ const Product = () => {
         backgroundColor: "#f0f4fa"
       }}>
         <Typography variant="h4" align="center" gutterBottom>Product Details</Typography>
-        <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 4 }}>
-          <Avatar alt={name} src={image.filepreview} sx={{ width: 100, height: 100, marginRight: 2 }} />
-          <Box>
-            <Typography variant="h6">{name}</Typography>
-            <Typography>Serial Number: {serialNumber}</Typography>
-            <Typography>Description: {description}</Typography>
-            <Typography>Brand: {brand}</Typography>
-          </Box>
-        </Box>
 
-        <Typography variant="h5" align="center" gutterBottom>Product History</Typography>
-        <Timeline position="alternate">
-          {history.map((item, index) => (
-            <TimelineItem key={index}>
-              <TimelineOppositeContent color="textSecondary">
-                {dayjs(item.timestamp * 1000).format('DD MMM YYYY - hh:mm A')}
-              </TimelineOppositeContent>
-              <TimelineSeparator>
-                <TimelineDot />
-                {index !== history.length - 1 && <TimelineConnector />}
-              </TimelineSeparator>
-              <TimelineContent>
-                <Typography>Actor: {item.actor}</Typography>
-                <Typography>Location: {item.location}</Typography>
-              </TimelineContent>
-            </TimelineItem>
-          ))}
-        </Timeline>
+        {loading ? (
+          <Typography align="center" sx={{ mt: 5, mb: 5 }}>Loading product details...</Typography>
+        ) : (
+          <>
+            <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 4 }}>
+              <Avatar alt={name} src={image.filepreview} sx={{ width: 100, height: 100, marginRight: 2 }} />
+              <Box>
+                <Typography variant="h6">{name}</Typography>
+                <Typography>Serial Number: {serialNumber}</Typography>
+                <Typography>Description: {description}</Typography>
+                <Typography>Brand: {brand}</Typography>
+              </Box>
+            </Box>
 
-        <Typography variant="body2" align="center" sx={{ mt: 3 }}>
-          Product Sold: <strong>{isSold ? 'Yes' : 'No'}</strong>
-        </Typography>
+            <Typography variant="h5" align="center" gutterBottom>Product History</Typography>
+            <Timeline position="alternate">
+              {history.map((item, index) => (
+                <TimelineItem key={index}>
+                  <TimelineOppositeContent color="textSecondary">
+                    {dayjs(item.timestamp * 1000).format('DD MMM YYYY - hh:mm A')}
+                  </TimelineOppositeContent>
+                  <TimelineSeparator>
+                    <TimelineDot />
+                    {index !== history.length - 1 && <TimelineConnector />}
+                  </TimelineSeparator>
+                  <TimelineContent>
+                    <Typography>Actor: {item.actor}</Typography>
+                    <Typography>Location: {item.location}</Typography>
+                  </TimelineContent>
+                </TimelineItem>
+              ))}
+            </Timeline>
 
-        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
-          <Button variant="contained" onClick={handleBack}>Back</Button>
-        </Box>
+            <Typography variant="body2" align="center" sx={{ mt: 3 }}>
+              Product Sold: <strong>{isSold ? 'Yes' : 'No'}</strong>
+            </Typography>
+
+            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
+              <Button variant="contained" onClick={handleBack}>Back</Button>
+            </Box>
+          </>
+        )}
       </Paper>
     </Box>
   );
