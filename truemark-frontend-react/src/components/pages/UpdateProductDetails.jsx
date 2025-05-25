@@ -1092,7 +1092,7 @@ const UpdateProductDetails = () => {
   const [isSold, setIsSold] = useState(false);
   const [loading, setLoading] = useState("");
 
-  const CONTRACT_ADDRESS = "0xd30f45A86f17E011f54e05465BCcB5Ee82411947";
+  const CONTRACT_ADDRESS = "0xF89Dd0FF002179340542D03FfFd7CcBaa4972Ae6";
   const CONTRACT_ABI = abi.abi;
 
   const { auth } = useAuth();
