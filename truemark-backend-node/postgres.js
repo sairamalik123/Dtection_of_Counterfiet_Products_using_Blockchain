@@ -6,6 +6,7 @@ const path = require('path');
 const multer = require('multer');
 
 const app = express();
+app.use(express.json());
 app.use(bodyParser.json());
 app.use(cors());
 
@@ -104,8 +105,10 @@ const storageProfile = multer.diskStorage({
     }
 })
 
+// ✅ MAIN FUNCTION: Add product with signing and one-time key
+
 async function addProduct(name, brand) {
-    try{
+    try {
         // 1. Generate RSA keypair
         const { publicKey, privateKey } = generateKeyPairSync('rsa', {
             modulusLength: 2048,
@@ -114,44 +117,58 @@ async function addProduct(name, brand) {
         });
         const encryptedPrivateKey = encrypt(privateKey);
 
-        // 2. Insert product (get serialnumber via RETURNING)
+        // 2. Generate one-time key (random 8-character alphanumeric)
+        const oneTimeKey = Math.random().toString(36).substring(2, 10).toUpperCase();
+        const keyUsed = false;
+
+        // 3. Insert product (get serialnumber via RETURNING)
         const insertRes = await client.query(
-            'INSERT INTO product (name, brand, public_key, encrypted_private_key) VALUES ($1, $2, $3, $4) RETURNING serialnumber',
-            [name, brand, publicKey, encryptedPrivateKey]
+            `INSERT INTO product (name, brand, public_key, encrypted_private_key, one_time_key, key_used) 
+             VALUES ($1, $2, $3, $4, $5, $6) RETURNING serialnumber`,
+            [name, brand, publicKey, encryptedPrivateKey, oneTimeKey, keyUsed]
         );
         const serialNumber = insertRes.rows[0].serialnumber;
 
-        // 3. Sign the product data (now you have serialNumber)
+        // 4. Sign the product data
         const sign = createSign('SHA256');
         sign.update(serialNumber + name + brand);
         sign.end();
         const signature = sign.sign(privateKey, 'base64');
 
-        // 4. Update the row with the signature
+        // 5. Update the row with the signature
         await client.query(
             'UPDATE product SET signature=$1 WHERE serialnumber=$2',
             [signature, serialNumber]
         );
 
-        console.log('Product inserted and signed successfully!');
+        console.log('Product inserted, signed, and one-time key generated!');
         return serialNumber;
-    }
-    catch (error) {
+    } catch (error) {
         console.error('Error inserting product:', error);
         throw error;
     }
 }
 
+
+
 app.post('/product/verify', async (req, res) => {
-    const { serialNumber, signature } = req.body;
+  try {
+    const serial = parseInt(req.body.serialNumber);
+    const signature = req.body.signature;
+
+    console.log("Looking for serial:", serial);
+
     const result = await client.query(
-        'SELECT serialNumber, name, brand, public_key FROM product WHERE serialNumber=$1',
-        [serialNumber]
+      'SELECT serialnumber, name, brand, public_key FROM product WHERE serialnumber = $1',
+      [serial]
     );
+
     if (result.rows.length === 0) {
-        return res.status(404).send('Product not found');
+      return res.status(404).send('Product not found');
     }
+
     const product = result.rows[0];
+    // console.log("Found product:", product);
 
     const { createVerify } = require('crypto');
     const verify = createVerify('SHA256');
@@ -161,12 +178,85 @@ app.post('/product/verify', async (req, res) => {
     const isValid = verify.verify(product.public_key, signature, 'base64');
 
     res.json({
-        serialNumber,
-        name: product.name,
-        brand: product.brand,
-        isValid
+      serialNumber: product.serialnumber,
+      name: product.name,
+      brand: product.brand,
+      isValid
     });
+  } catch (err) {
+    console.error("Verification error:", err);
+    res.status(500).send("Internal Server Error");
+  }
 });
+
+//   const { serialNumber, oneTimeKey } = req.body;
+
+//   try {
+//     const result = await db.query(
+//       "SELECT one_time_key, key_used FROM product WHERE serialnumber = $1",
+//       [serialNumber]
+//     );
+
+//     const foundRow = result.rows[0];
+
+//     if (foundRow && foundRow.one_time_key === oneTimeKey) {
+//       if (foundRow.key_used) {
+//         return res.json({ success: false, reason: "already_used" });
+//       }
+
+//       // ✅ Mark OTP as used
+//       await db.query(
+//         "UPDATE product SET key_used = true WHERE serialnumber = $1",
+//         [serialNumber]
+//       );
+
+//       return res.json({ success: true });
+//     } else {
+//       return res.json({ success: false, reason: "invalid_key" });
+//     }
+//   } catch (err) {
+//     console.error("OTP verification error:", err);
+//     return res.status(500).json({ success: false, reason: "
+app.post('/product/verifyOneTimeKey', async (req, res) => {
+  const { serialNumber, oneTimeKey } = req.body;
+console.log("🔍 API Called with:", serialNumber, oneTimeKey);
+  if (!serialNumber || !oneTimeKey) {
+    return res.status(400).json({ valid: false, message: "Missing serial number or one-time key" });
+  }
+
+  try {
+    // Ensure serialNumber is cast to integer
+    const serial = parseInt(serialNumber);
+
+    const result = await client.query(
+      `SELECT * FROM product WHERE serialnumber = $1 AND one_time_key = $2`,
+      [serial, oneTimeKey]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(400).json({ valid: false, message: "Invalid serial number or one-time key" });
+    }
+
+    const product = result.rows[0];
+
+    if (product.key_used) {
+      return res.status(400).json({ valid: false, message: "One-time key has already been used" });
+    }
+
+    // Mark key as used
+    await client.query(
+      `UPDATE product SET key_used = TRUE WHERE serialnumber = $1`,
+      [serial]
+    );
+
+    return res.status(200).json({ valid: true });
+  } catch (err) {
+    console.error("Error verifying key:", err);
+    return res.status(500).json({ valid: false, message: "Internal server error" });
+  }
+});
+
+
 
 async function getDecryptedPrivateKey(serialNumber) {
     const res = await client.query('SELECT encrypted_private_key FROM product WHERE serialnumber = $1', [serialNumber]);
