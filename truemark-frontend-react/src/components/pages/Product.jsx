@@ -1,762 +1,4 @@
-// import { Box, Paper, Avatar, Typography, Button } from '@mui/material';
-// import bgImg from '../../img/bg.png';
-// import Timeline from '@mui/lab/Timeline';
-// import TimelineItem from '@mui/lab/TimelineItem';
-// import TimelineSeparator from '@mui/lab/TimelineSeparator';
-// import TimelineConnector from '@mui/lab/TimelineConnector';
-// import TimelineContent from '@mui/lab/TimelineContent';
-// import TimelineDot from '@mui/lab/TimelineDot';
-// import TimelineOppositeContent, {
-//     timelineOppositeContentClasses,
-// } from '@mui/lab/TimelineOppositeContent';
-// import dayjs from 'dayjs';
-// import { useLocation, useNavigate } from 'react-router-dom';
-// import abi from '../../utils/Truemark.json';
-// import { useEffect, useState } from 'react';
-// import { ethers } from "ethers";
 
-
-// const getEthereumObject = () => window.ethereum;
-
-// /*
-//  * This function returns the first linked account found.
-//  * If there is no account linked, it will return null.
-//  */
-// const findMetaMaskAccount = async () => {
-//     try {
-//         const ethereum = getEthereumObject();
-
-//         /*
-//         * First make sure we have access to the Ethereum object.
-//         */
-//         if (!ethereum) {
-//             console.error("Make sure you have Metamask!");
-//             return null;
-//         }
-
-//         console.log("We have the Ethereum object", ethereum);
-//         const accounts = await ethereum.request({ method: "eth_accounts" });
-
-//         if (accounts.length !== 0) {
-//             const account = accounts[0];
-//             console.log("Found an authorized account:", account);
-//             return account;
-//         } else {
-//             console.error("No authorized account found");
-//             return null;
-//         }
-//     } catch (error) {
-//         console.error(error);
-//         return null;
-//     }
-// };
-
-
-
-// const Product = () => {
-//     const [currentAccount, setCurrentAccount] = useState("");
-
-//     const [serialNumber, setSerialNumber] = useState("");
-//     const [productData, setProductData] = useState("");
-
-//     const [name, setName] = useState("P");
-//     const [brand, setBrand] = useState("");
-//     const [description, setDescription] = useState("");
-//     const [history, setHistory] = useState([]);
-//     const [isSold, setIsSold] = useState(false);
-//     const [toUpdate, setToUpdate] = useState(false);
-//     const [image, setImage] = useState({
-//         file: [],
-//         filepreview: null
-//     });
-
-
-
-//     const CONTRACT_ADDRESS = '0x3d4c9606DC06741181D7c37207C4c11020931FcA';
-//     const CONTRACT_ABI = abi.abi;
-
-//     const navigate = useNavigate();
-//     const location = useLocation();
-//     const qrData = location.state?.qrData;
-
-//     useEffect(() => {
-//         console.log("useEffect 1");
-//         findMetaMaskAccount().then((account) => {
-//             if (account !== null) {
-//                 setCurrentAccount(account);
-//             }
-//         });
-
-//         if (qrData) {
-//             handleScan(qrData)
-//         }
-
-//     }, [qrData]);
-
-
-//     const getImage = async (imageName) => {
-//         setImage(prevState => ({
-//             ...prevState,
-//             filepreview: `http://localhost:5000/file/product/${imageName}`
-//             })
-//         )
-//     }
-
-//     const handleScan = async (qrData) => {
-//         const data = qrData.split(",");
-//         const contractAddress = data[0];
-//         setSerialNumber(data[1]);
-
-//         console.log("contract address", contractAddress)
-//         console.log("serial number", data[1])
-
-//         if (contractAddress === CONTRACT_ADDRESS) {
-
-//             try {
-//                 const { ethereum } = window;
-
-//                 if (ethereum) {
-//                     const provider = new ethers.providers.Web3Provider(ethereum);
-//                     const signer = provider.getSigner();
-//                     const productContract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
-
-//                     console.log("here")
-
-//                     const product = await productContract.getProduct(data[1].toString());
-                    
-
-//                     // setProductData(product.toString())
-//                     // setToUpdate(true);
-
-//                     console.log("Retrieved product...", product);
-//                     setData(product.toString())
-
-//                 } else {
-//                     console.log("Ethereum object doesn't exist!");
-//                 }
-//             } catch (error) {
-//                 console.log(error);
-//             }
-//         }
-//     };
-
-    
-
-//     const setData = (d) => {
-//         console.log("product data: ", d);
-
-//         const arr = d.split(",");
-//         console.log("arr", arr)
-
-//         setName(arr[1]);
-//         setBrand(arr[2]);
-//         setDescription(arr[3].replace(/;/g, ","));
-//         // setImage(arr[4]);
-//         getImage(arr[4]);
-
-//         const hist = [];
-//         let start = 5;
-
-//         for (let i = 5; i < arr.length; i += 5) {
-//             const actor = arr[start + 1];
-//             const location = arr[start + 2].replace(/;/g, ",");
-//             const timestamp = arr[start + 3];
-//             const isSold = arr[start + 4] === "true" ? setIsSold(true) : false;
-
-//             hist.push({
-//                 actor, location, timestamp, isSold
-//             });
-
-//             start += 5;
-//         }
-//         console.log("hist", hist)
-//         setHistory(hist);
-
-//     }
-
-//     const handleBack = () => {
-//         navigate(-2)
-//     }
-
-
-//     const getHistory = () => {
-//         return history.map((item, index) => {
-//             const date = dayjs(item.timestamp * 1000).format('MM/DD/YYYY');
-//             const time = dayjs(item.timestamp * 1000).format('HH:mm a');
-//             console.log("getting history")
-
-//             return (
-//                 <TimelineItem key={index}>
-//                     <TimelineOppositeContent color="textSecondary">
-//                         {time} {date}
-//                     </TimelineOppositeContent>
-//                     <TimelineSeparator>
-//                         <TimelineDot />
-//                         <TimelineConnector />
-//                     </TimelineSeparator>
-//                     <TimelineContent sx={{ py: '12px', px: 2 }}>
-//                         <Typography>Location: {item.location}</Typography>
-//                         <Typography>Actor: {item.actor}</Typography>
-//                     </TimelineContent>
-//                 </TimelineItem>
-//             );
-//         });
-//     }
-
-
-//     return (
-//         <Box sx={{
-//             backgroundImage: `url(${bgImg})`,
-//             minHeight: "80vh",
-//             position: 'absolute',
-//             left: 0,
-//             right: 0,
-//             top: 0,
-//             bottom: 0,
-//             backgroundSize: 'cover',
-//             backgroundRepeat: 'no-repeat',
-//             zIndex: -2,
-//             overflowY: "scroll"
-//         }}>
-//             <Paper elevation={3} sx={{ width: "400px", margin: "auto", marginTop: "10%", marginBottom: "10%", padding: "3%", backgroundColor: "#e3eefc" }}>
-
-//                 <Typography
-//                     variant="body2"
-//                     sx={{
-//                         textAlign: "center", marginTop: "3%"
-//                     }}
-//                 >
-
-//                     Your Product is Authentic!</Typography>
-//                 <Box
-//                     sx={{
-//                         textAlign: "center", marginBottom: "5%",
-//                     }}
-//                 >
-
-//                     <Typography
-//                         variant="h2"
-//                         sx={{
-//                             textAlign: "center", marginBottom: "3%",
-//                             fontFamily: 'Gambetta', fontWeight: "bold", fontSize: "2.5rem"
-//                         }}
-//                     >
-//                         Product Details</Typography>
-
-//                     <Box
-//                         sx={{
-//                             display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', flex: 1, width: '100%',
-//                             marginTop: '5%', marginBottom: '5%'
-//                         }}
-//                     >
-//                         <Box
-//                             sx={{
-//                                 marginRight: '1.5%', display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'center', flex: '0 0 35%', width: '35%'
-//                             }}
-//                         >
-//                             <Avatar
-//                                 alt={name}
-//                                 src={image.filepreview}
-//                                 sx={{
-//                                     width: 100,
-//                                     height: 100,
-//                                     margin: "auto",
-//                                     marginBottom: "3%",
-//                                     backgroundColor: "#3f51b5"
-//                                 }}
-//                             >
-//                                 {name}
-
-
-//                             </Avatar>
-
-//                         </Box>
-//                         <Box
-//                             sx={{
-//                                 marginLeft: '1.5%', display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'left', flex: '0 0 65%', width: '65%'
-//                             }}
-//                         >
-//                             <Typography
-//                                 variant="body1"
-//                                 sx={{
-//                                     textAlign: "left", marginBottom: "5%",
-//                                 }}
-//                             >
-//                                 {name}
-
-//                             </Typography>
-
-//                             <Typography
-//                                 variant="body2"
-//                                 sx={{
-//                                     textAlign: "left", marginBottom: "3%",
-//                                 }}
-//                             >
-//                                 Serial Number: {serialNumber}
-//                             </Typography>
-
-
-//                             <Typography
-//                                 variant="body2"
-//                                 sx={{
-//                                     textAlign: "left", marginBottom: "3%",
-//                                 }}
-//                             >
-//                                 Description: {description}
-//                             </Typography>
-
-//                             <Typography
-//                                 variant="body2"
-//                                 sx={{
-//                                     textAlign: "left", marginBottom: "3%",
-//                                 }}
-//                             >
-//                                 Brand: {brand}
-//                             </Typography>
-
-//                         </Box>
-
-//                     </Box>
-
-//                     <Timeline
-//                         sx={{
-//                             [`& .${timelineOppositeContentClasses.root}`]: {
-//                                 flex: 0.2,
-//                             },
-//                         }}
-//                     >
-//                         {getHistory()}
-//                         <TimelineItem>
-//                             <TimelineOppositeContent color="textSecondary">
-//                                 {dayjs().format('HH:mm a')} {dayjs().format('MM/DD/YYYY')}
-//                             </TimelineOppositeContent>
-//                             <TimelineSeparator>
-//                                 <TimelineDot />
-//                             </TimelineSeparator>
-//                             <TimelineContent sx={{ py: '12px', px: 2 }}>
-//                                 <Typography>IsSold: {isSold.toString()}</Typography>
-//                             </TimelineContent>
-//                         </TimelineItem>
-//                     </Timeline>
-
-
-
-
-
-//                     <Box
-//                         sx={{
-//                             width: "100%",
-//                             display: "flex",
-//                             justifyContent: "center",
-//                         }}
-//                     >
-
-
-//                         <Button
-//                             onClick={handleBack}
-//                             sx={{
-//                                 marginTop: "5%",
-//                             }}
-//                         >
-//                             Back
-//                         </Button>
-
-//                     </Box>
-
-
-
-//                 </Box>
-//             </Paper>
-//         </Box>
-//     )
-// }
-
-// export default Product;
-
-
-
-
-
-// import { Box, Paper, Avatar, Typography, Button } from '@mui/material';
-// import bgImg from '../../img/bg.png';
-// import Timeline from '@mui/lab/Timeline';
-// import TimelineItem from '@mui/lab/TimelineItem';
-// import TimelineSeparator from '@mui/lab/TimelineSeparator';
-// import TimelineConnector from '@mui/lab/TimelineConnector';
-// import TimelineContent from '@mui/lab/TimelineContent';
-// import TimelineDot from '@mui/lab/TimelineDot';
-// import TimelineOppositeContent, {
-//     timelineOppositeContentClasses,
-// } from '@mui/lab/TimelineOppositeContent';
-// import dayjs from 'dayjs';
-// import { useLocation, useNavigate } from 'react-router-dom';
-// import abi from '../../utils/Truemark.json';
-// import { useEffect, useState } from 'react';
-// import { ethers } from "ethers";
-
-
-// const getEthereumObject = () => window.ethereum;
-
-// /*
-//  * This function returns the first linked account found.
-//  * If there is no account linked, it will return null.
-//  */
-// const findMetaMaskAccount = async () => {
-//     try {
-//         const ethereum = getEthereumObject();
-
-//         /*
-//         * First make sure we have access to the Ethereum object.
-//         */
-//         if (!ethereum) {
-//             console.error("Make sure you have Metamask!");
-//             return null;
-//         }
-
-//         console.log("We have the Ethereum object", ethereum);
-//         const accounts = await ethereum.request({ method: "eth_accounts" });
-
-//         if (accounts.length !== 0) {
-//             const account = accounts[0];
-//             console.log("Found an authorized account:", account);
-//             return account;
-//         } else {
-//             console.error("No authorized account found");
-//             return null;
-//         }
-//     } catch (error) {
-//         console.error(error);
-//         return null;
-//     }
-// };
-
-
-
-// const Product = () => {
-//     const [currentAccount, setCurrentAccount] = useState("");
-
-//     const [serialNumber, setSerialNumber] = useState("");
-//     const [productData, setProductData] = useState("");
-
-//     const [name, setName] = useState("P");
-//     const [brand, setBrand] = useState("");
-//     const [description, setDescription] = useState("");
-//     const [history, setHistory] = useState([]);
-//     const [isSold, setIsSold] = useState(false);
-//     const [toUpdate, setToUpdate] = useState(false);
-//     const [image, setImage] = useState({
-//         file: [],
-//         filepreview: null
-//     });
-
-
-
-//     const CONTRACT_ADDRESS = '0x210e88E9eACAA2B7C55341EF1f28AA6659bD7a8C';
-//     const CONTRACT_ABI = abi.abi;
-
-//     const navigate = useNavigate();
-//     const location = useLocation();
-//     const qrData = location.state?.qrData;
-
-//     useEffect(() => {
-//         console.log("useEffect 1");
-//         findMetaMaskAccount().then((account) => {
-//             if (account !== null) {
-//                 setCurrentAccount(account);
-//             }
-//         });
-
-//         if (qrData) {
-//             handleScan(qrData)
-//         }
-
-//     }, [qrData]);
-
-
-//     const getImage = async (imageName) => {
-//         setImage(prevState => ({
-//             ...prevState,
-//             filepreview: `http://localhost:5000/file/product/${imageName}`
-//             })
-//         )
-//     }
-
-//     const handleScan = async (qrData) => {
-//         const data = qrData.split(",");
-//         const contractAddress = data[0];
-//         setSerialNumber(data[1]);
-
-//         console.log("contract address", contractAddress)
-//         console.log("serial number", data[1])
-
-//         if (contractAddress === CONTRACT_ADDRESS) {
-
-//             try {
-//                 const { ethereum } = window;
-
-//                 if (ethereum) {
-//                     const provider = new ethers.providers.Web3Provider(ethereum);
-//                     const signer = provider.getSigner();
-//                     const productContract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
-
-//                     console.log("here")
-
-//                     const product = await productContract.getProduct(data[1].toString());
-                    
-
-//                     // setProductData(product.toString())
-//                     // setToUpdate(true);
-
-//                     console.log("Retrieved product...", product);
-//                     setData(product.toString())
-
-//                 } else {
-//                     console.log("Ethereum object doesn't exist!");
-//                 }
-//             } catch (error) {
-//                 console.log(error);
-//             }
-//         }
-//     };
-
-    
-
-//     const setData = (d) => {
-//         console.log("product data: ", d);
-
-//         const arr = d.split(",");
-//         console.log("arr", arr)
-
-//         setName(arr[1]);
-//         setBrand(arr[2]);
-//         setDescription(arr[3].replace(/;/g, ","));
-//         // setImage(arr[4]);
-//         getImage(arr[4]);
-
-//         const hist = [];
-//         let start = 5;
-
-//         for (let i = 5; i < arr.length; i += 5) {
-//             const actor = arr[start + 1];
-//             const location = arr[start + 2].replace(/;/g, ",");
-//             const timestamp = arr[start + 3];
-//             const isSold = arr[start + 4] === "true" ? setIsSold(true) : false;
-
-//             hist.push({
-//                 actor, location, timestamp, isSold
-//             });
-
-//             start += 5;
-//         }
-//         console.log("hist", hist)
-//         setHistory(hist);
-
-//     }
-
-//     const handleBack = () => {
-//         navigate(-2)
-//     }
-
-
-//     const getHistory = () => {
-//         return history.map((item, index) => {
-//             const date = dayjs(item.timestamp * 1000).format('MM/DD/YYYY');
-//             const time = dayjs(item.timestamp * 1000).format('HH:mm a');
-//             console.log("getting history")
-
-//             return (
-//                 <TimelineItem key={index}>
-//                     <TimelineOppositeContent color="textSecondary">
-//                         {time} {date}
-//                     </TimelineOppositeContent>
-//                     <TimelineSeparator>
-//                         <TimelineDot />
-//                         <TimelineConnector />
-//                     </TimelineSeparator>
-//                     <TimelineContent sx={{ py: '12px', px: 2 }}>
-//                         <Typography>Location: {item.location}</Typography>
-//                         <Typography>Actor: {item.actor}</Typography>
-//                     </TimelineContent>
-//                 </TimelineItem>
-//             );
-//         });
-//     }
-
-
-//     return (
-//         <Box sx={{
-//             backgroundImage: `url(${bgImg})`,
-//             minHeight: "80vh",
-//             position: 'absolute',
-//             left: 0,
-//             right: 0,
-//             top: 0,
-//             bottom: 0,
-//             backgroundSize: 'cover',
-//             backgroundRepeat: 'no-repeat',
-//             zIndex: -2,
-//             overflowY: "scroll"
-//         }}>
-//             <Paper elevation={3} sx={{ width: "400px", margin: "auto", marginTop: "10%", marginBottom: "10%", padding: "3%", backgroundColor: "#e3eefc" }}>
-
-//                 <Typography
-//                     variant="body2"
-//                     sx={{
-//                         textAlign: "center", marginTop: "3%"
-//                     }}
-//                 >
-
-//                     Your Product is Authentic!</Typography>
-//                 <Box
-//                     sx={{
-//                         textAlign: "center", marginBottom: "5%",
-//                     }}
-//                 >
-
-//                     <Typography
-//                         variant="h2"
-//                         sx={{
-//                             textAlign: "center", marginBottom: "3%",
-//                             fontFamily: 'Gambetta', fontWeight: "bold", fontSize: "2.5rem"
-//                         }}
-//                     >
-//                         Product Details</Typography>
-
-//                     <Box
-//                         sx={{
-//                             display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', flex: 1, width: '100%',
-//                             marginTop: '5%', marginBottom: '5%'
-//                         }}
-//                     >
-//                         <Box
-//                             sx={{
-//                                 marginRight: '1.5%', display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'center', flex: '0 0 35%', width: '35%'
-//                             }}
-//                         >
-//                             <Avatar
-//                                 alt={name}
-//                                 src={image.filepreview}
-//                                 sx={{
-//                                     width: 100,
-//                                     height: 100,
-//                                     margin: "auto",
-//                                     marginBottom: "3%",
-//                                     backgroundColor: "#3f51b5"
-//                                 }}
-//                             >
-//                                 {name}
-
-
-//                             </Avatar>
-
-//                         </Box>
-//                         <Box
-//                             sx={{
-//                                 marginLeft: '1.5%', display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'left', flex: '0 0 65%', width: '65%'
-//                             }}
-//                         >
-//                             <Typography
-//                                 variant="body1"
-//                                 sx={{
-//                                     textAlign: "left", marginBottom: "5%",
-//                                 }}
-//                             >
-//                                 {name}
-
-//                             </Typography>
-
-//                             <Typography
-//                                 variant="body2"
-//                                 sx={{
-//                                     textAlign: "left", marginBottom: "3%",
-//                                 }}
-//                             >
-//                                 Serial Number: {serialNumber}
-//                             </Typography>
-
-
-//                             <Typography
-//                                 variant="body2"
-//                                 sx={{
-//                                     textAlign: "left", marginBottom: "3%",
-//                                 }}
-//                             >
-//                                 Description: {description}
-//                             </Typography>
-
-//                             <Typography
-//                                 variant="body2"
-//                                 sx={{
-//                                     textAlign: "left", marginBottom: "3%",
-//                                 }}
-//                             >
-//                                 Brand: {brand}
-//                             </Typography>
-
-//                         </Box>
-
-//                     </Box>
-
-//                     <Timeline
-//                         sx={{
-//                             [`& .${timelineOppositeContentClasses.root}`]: {
-//                                 flex: 0.2,
-//                             },
-//                         }}
-//                     >
-//                         {getHistory()}
-//                         <TimelineItem>
-//                             <TimelineOppositeContent color="textSecondary">
-//                                 {dayjs().format('HH:mm a')} {dayjs().format('MM/DD/YYYY')}
-//                             </TimelineOppositeContent>
-//                             <TimelineSeparator>
-//                                 <TimelineDot />
-//                             </TimelineSeparator>
-//                             <TimelineContent sx={{ py: '12px', px: 2 }}>
-//                                 <Typography>IsSold: {isSold.toString()}</Typography>
-//                             </TimelineContent>
-//                         </TimelineItem>
-//                     </Timeline>
-
-
-
-
-
-//                     <Box
-//                         sx={{
-//                             width: "100%",
-//                             display: "flex",
-//                             justifyContent: "center",
-//                         }}
-//                     >
-
-
-//                         <Button
-//                             onClick={handleBack}
-//                             sx={{
-//                                 marginTop: "5%",
-//                             }}
-//                         >
-//                             Back
-//                         </Button>
-
-//                     </Box>
-
-
-
-//                 </Box>
-//             </Paper>
-//         </Box>
-//     )
-// }
-
-// export default Product;
-
-
-
-
-
-// Product.jsx
 // import { Box, Paper, Avatar, Typography, Button } from '@mui/material';
 // import Timeline from '@mui/lab/Timeline';
 // import TimelineItem from '@mui/lab/TimelineItem';
@@ -772,18 +14,19 @@
 // import abi from '../../utils/Truemark.json';
 // import bgImg from '../../img/bg.png';
 
-// const CONTRACT_ADDRESS = '0x210e88E9eACAA2B7C55341EF1f28AA6659bD7a8C';
+// const CONTRACT_ADDRESS = '0x67333426207CaFD285E178163c43c600127BBEb7';
 // const CONTRACT_ABI = abi.abi;
 
 // const Product = () => {
 //   const [currentAccount, setCurrentAccount] = useState('');
 //   const [serialNumber, setSerialNumber] = useState('');
-//   const [name, setName] = useState('P');
+//   const [name, setName] = useState('');
 //   const [brand, setBrand] = useState('');
 //   const [description, setDescription] = useState('');
 //   const [image, setImage] = useState({ filepreview: null });
 //   const [history, setHistory] = useState([]);
 //   const [isSold, setIsSold] = useState(false);
+//   const [loading, setLoading] = useState(true); // <-- Added loading state
 
 //   const location = useLocation();
 //   const navigate = useNavigate();
@@ -802,6 +45,7 @@
 //   };
 
 //   const handleScan = async (qrData) => {
+//     setLoading(true); // Start loading
 //     const [contractAddress, serial] = qrData.split(',');
 //     setSerialNumber(serial);
 
@@ -817,6 +61,7 @@
 //         }
 //       } catch (error) {
 //         console.error(error);
+//         setLoading(false);
 //       }
 //     }
 //   };
@@ -839,6 +84,7 @@
 //     });
 
 //     setHistory(hist);
+//     setLoading(false); // End loading
 //   };
 
 //   const handleBack = () => navigate(-2);
@@ -858,42 +104,49 @@
 //         backgroundColor: "#f0f4fa"
 //       }}>
 //         <Typography variant="h4" align="center" gutterBottom>Product Details</Typography>
-//         <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 4 }}>
-//           <Avatar alt={name} src={image.filepreview} sx={{ width: 100, height: 100, marginRight: 2 }} />
-//           <Box>
-//             <Typography variant="h6">{name}</Typography>
-//             <Typography>Serial Number: {serialNumber}</Typography>
-//             <Typography>Description: {description}</Typography>
-//             <Typography>Brand: {brand}</Typography>
-//           </Box>
-//         </Box>
 
-//         <Typography variant="h5" align="center" gutterBottom>Product History</Typography>
-//         <Timeline position="alternate">
-//           {history.map((item, index) => (
-//             <TimelineItem key={index}>
-//               <TimelineOppositeContent color="textSecondary">
-//                 {dayjs(item.timestamp * 1000).format('DD MMM YYYY - hh:mm A')}
-//               </TimelineOppositeContent>
-//               <TimelineSeparator>
-//                 <TimelineDot />
-//                 {index !== history.length - 1 && <TimelineConnector />}
-//               </TimelineSeparator>
-//               <TimelineContent>
-//                 <Typography>Actor: {item.actor}</Typography>
-//                 <Typography>Location: {item.location}</Typography>
-//               </TimelineContent>
-//             </TimelineItem>
-//           ))}
-//         </Timeline>
+//         {loading ? (
+//           <Typography align="center" sx={{ mt: 5, mb: 5 }}>Loading product details...</Typography>
+//         ) : (
+//           <>
+//             <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 4 }}>
+//               <Avatar alt={name} src={image.filepreview} sx={{ width: 100, height: 100, marginRight: 2 }} />
+//               <Box>
+//                 <Typography variant="h6">{name}</Typography>
+//                 <Typography>Serial Number: {serialNumber}</Typography>
+//                 <Typography>Description: {description}</Typography>
+//                 <Typography>Brand: {brand}</Typography>
+//               </Box>
+//             </Box>
 
-//         <Typography variant="body2" align="center" sx={{ mt: 3 }}>
-//           Product Sold: <strong>{isSold ? 'Yes' : 'No'}</strong>
-//         </Typography>
+//             <Typography variant="h5" align="center" gutterBottom>Product History</Typography>
+//             <Timeline position="alternate">
+//               {history.map((item, index) => (
+//                 <TimelineItem key={index}>
+//                   <TimelineOppositeContent color="textSecondary">
+//                     {dayjs(item.timestamp * 1000).format('DD MMM YYYY - hh:mm A')}
+//                   </TimelineOppositeContent>
+//                   <TimelineSeparator>
+//                     <TimelineDot />
+//                     {index !== history.length - 1 && <TimelineConnector />}
+//                   </TimelineSeparator>
+//                   <TimelineContent>
+//                     <Typography>Actor: {item.actor}</Typography>
+//                     <Typography>Location: {item.location}</Typography>
+//                   </TimelineContent>
+//                 </TimelineItem>
+//               ))}
+//             </Timeline>
 
-//         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
-//           <Button variant="contained" onClick={handleBack}>Back</Button>
-//         </Box>
+//             <Typography variant="body2" align="center" sx={{ mt: 3 }}>
+//               Product Sold: <strong>{isSold ? 'Yes' : 'No'}</strong>
+//             </Typography>
+
+//             <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
+//               <Button variant="contained" onClick={handleBack}>Back</Button>
+//             </Box>
+//           </>
+//         )}
 //       </Paper>
 //     </Box>
 //   );
@@ -901,6 +154,613 @@
 
 // export default Product;
 
+
+//correct
+// import { Box, Paper, Avatar, Typography, Button } from '@mui/material';
+// import Timeline from '@mui/lab/Timeline';
+// import TimelineItem from '@mui/lab/TimelineItem';
+// import TimelineSeparator from '@mui/lab/TimelineSeparator';
+// import TimelineConnector from '@mui/lab/TimelineConnector';
+// import TimelineContent from '@mui/lab/TimelineContent';
+// import TimelineDot from '@mui/lab/TimelineDot';
+// import TimelineOppositeContent from '@mui/lab/TimelineOppositeContent';
+// import dayjs from 'dayjs';
+// import { useEffect, useState } from 'react';
+// import { useLocation, useNavigate, useParams } from 'react-router-dom';
+// import { ethers } from 'ethers';
+// import abi from '../../utils/Truemark.json';
+// import bgImg from '../../img/bg.png';
+
+// const CONTRACT_ADDRESS = '0x67333426207CaFD285E178163c43c600127BBEb7';
+// const CONTRACT_ABI = abi.abi;
+
+// const Product = () => {
+//   const [currentAccount, setCurrentAccount] = useState('');
+//   const [serialNumber, setSerialNumber] = useState('');
+//   const [name, setName] = useState('');
+//   const [brand, setBrand] = useState('');
+//   const [description, setDescription] = useState('');
+//   const [image, setImage] = useState({ filepreview: null });
+//   const [history, setHistory] = useState([]);
+//   const [isSold, setIsSold] = useState(false);
+//   const [loading, setLoading] = useState(true);
+
+//   const location = useLocation();
+//   const navigate = useNavigate();
+//   const params = useParams();
+  
+//   // Get QR data from location state or URL params
+//   const qrData = location.state?.qrData;
+//   const urlSerialNumber = params.serialNumber; // For direct URL access
+
+//   useEffect(() => {
+//     if (qrData) {
+//       handleScan(qrData);
+//     } else if (urlSerialNumber) {
+//       // Handle direct URL access like /product/10
+//       handleDirectAccess(urlSerialNumber);
+//     }
+//   }, [qrData, urlSerialNumber]);
+
+//   const getImage = async (imageName) => {
+//     setImage({
+//       filepreview: `http://localhost:5000/file/product/${imageName}`
+//     });
+//   };
+
+//   const handleDirectAccess = async (serial) => {
+//     setLoading(true);
+//     setSerialNumber(serial);
+    
+//     try {
+//       const { ethereum } = window;
+//       if (ethereum) {
+//         const provider = new ethers.providers.Web3Provider(ethereum);
+//         const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, provider);
+//         const product = await contract.getProduct(serial);
+//         populateProductData(product);
+//       } else {
+//         console.error("MetaMask not found");
+//         setLoading(false);
+//       }
+//     } catch (error) {
+//       console.error("Error loading product:", error);
+//       setLoading(false);
+//     }
+//   };
+
+//   const handleScan = async (qrData) => {
+//     setLoading(true);
+    
+//     try {
+//       let serial;
+      
+//       // Handle different QR formats
+//       if (qrData.includes(',')) {
+//         // CSV format: "contract,serialNumber"
+//         const [contractAddress, serialNum] = qrData.split(',');
+//         if (contractAddress === CONTRACT_ADDRESS) {
+//           serial = serialNum;
+//         } else {
+//           throw new Error("Invalid contract address");
+//         }
+//       } else {
+//         // Try to parse as JSON
+//         try {
+//           const parsed = JSON.parse(qrData);
+//           if (parsed.serialNumber) {
+//             serial = parsed.serialNumber;
+//           }
+//         } catch {
+//           // If not JSON, assume it's just the serial number
+//           serial = qrData;
+//         }
+//       }
+      
+//       if (!serial) {
+//         throw new Error("Could not extract serial number from QR data");
+//       }
+      
+//       setSerialNumber(serial);
+
+//       // Fetch product from blockchain
+//       const { ethereum } = window;
+//       if (ethereum) {
+//         const provider = new ethers.providers.Web3Provider(ethereum);
+//         const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, provider);
+//         const product = await contract.getProduct(serial);
+//         populateProductData(product);
+//       } else {
+//         throw new Error("MetaMask not found");
+//       }
+      
+//     } catch (error) {
+//       console.error("Error handling scan:", error);
+//       setLoading(false);
+//       // Optionally redirect to fake product page
+//       // navigate('/fake-product');
+//     }
+//   };
+
+//   const populateProductData = (product) => {
+//     setName(product[0]);
+//     setBrand(product[1]);
+//     setDescription(product[2]?.replace(/;/g, ','));
+//     getImage(product[4]);
+
+//     const hist = product[5].map((entry) => {
+//       const actor = entry[1];
+//       const location = entry[2]?.replace(/;/g, ',');
+//       const timestamp = Number(entry[3]);
+//       const isSoldFlag = entry[4];
+
+//       if (isSoldFlag) setIsSold(true);
+
+//       return { actor, location, timestamp };
+//     });
+
+//     setHistory(hist);
+//     setLoading(false);
+//   };
+
+//   const handleBack = () => navigate(-1);
+
+//   return (
+//     <Box sx={{
+//       backgroundImage: `url(${bgImg})`,
+//       minHeight: "100vh",
+//       backgroundSize: 'cover',
+//       paddingTop: "5%",
+//       paddingBottom: "5%",
+//     }}>
+//       <Paper elevation={3} sx={{
+//         maxWidth: 600,
+//         margin: "auto",
+//         padding: 4,
+//         backgroundColor: "#f0f4fa"
+//       }}>
+//         <Typography variant="h4" align="center" gutterBottom>Product Details</Typography>
+
+//         {loading ? (
+//           <Typography align="center" sx={{ mt: 5, mb: 5 }}>Loading product details...</Typography>
+//         ) : (
+//           <>
+//             <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 4 }}>
+//               <Avatar alt={name} src={image.filepreview} sx={{ width: 100, height: 100, marginRight: 2 }} />
+//               <Box>
+//                 <Typography variant="h6">{name}</Typography>
+//                 <Typography>Serial Number: {serialNumber}</Typography>
+//                 <Typography>Description: {description}</Typography>
+//                 <Typography>Brand: {brand}</Typography>
+//               </Box>
+//             </Box>
+
+//             <Typography variant="h5" align="center" gutterBottom>Product History</Typography>
+//             <Timeline position="alternate">
+//               {history.map((item, index) => (
+//                 <TimelineItem key={index}>
+//                   <TimelineOppositeContent color="textSecondary">
+//                     {dayjs(item.timestamp * 1000).format('DD MMM YYYY - hh:mm A')}
+//                   </TimelineOppositeContent>
+//                   <TimelineSeparator>
+//                     <TimelineDot />
+//                     {index !== history.length - 1 && <TimelineConnector />}
+//                   </TimelineSeparator>
+//                   <TimelineContent>
+//                     <Typography>Actor: {item.actor}</Typography>
+//                     <Typography>Location: {item.location}</Typography>
+//                   </TimelineContent>
+//                 </TimelineItem>
+//               ))}
+//             </Timeline>
+
+//             <Typography variant="body2" align="center" sx={{ mt: 3 }}>
+//               Product Sold: <strong>{isSold ? 'Yes' : 'No'}</strong>
+//             </Typography>
+
+//             <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
+//               <Button variant="contained" onClick={handleBack}>Back</Button>
+//             </Box>
+//           </>
+//         )}
+//       </Paper>
+//     </Box>
+//   );
+// };
+
+// export default Product;
+
+
+//fine productdetails file
+// import { Box, Paper, Avatar, Typography, Button } from '@mui/material';
+// import Timeline from '@mui/lab/Timeline';
+// import TimelineItem from '@mui/lab/TimelineItem';
+// import TimelineSeparator from '@mui/lab/TimelineSeparator';
+// import TimelineConnector from '@mui/lab/TimelineConnector';
+// import TimelineContent from '@mui/lab/TimelineContent';
+// import TimelineDot from '@mui/lab/TimelineDot';
+// import TimelineOppositeContent from '@mui/lab/TimelineOppositeContent';
+// import dayjs from 'dayjs';
+// import { useEffect, useState } from 'react';
+// import { useLocation, useNavigate, useParams } from 'react-router-dom';
+// import { ethers } from 'ethers';
+// import abi from '../../utils/Truemark.json';
+// import bgImg from '../../img/bg.png';
+
+// const CONTRACT_ADDRESS = '0x67333426207CaFD285E178163c43c600127BBEb7';
+// const CONTRACT_ABI = abi.abi;
+
+// const Product = () => {
+//   const [currentAccount, setCurrentAccount] = useState('');
+//   const [serialNumber, setSerialNumber] = useState('');
+//   const [name, setName] = useState('');
+//   const [brand, setBrand] = useState('');
+//   const [description, setDescription] = useState('');
+//   const [image, setImage] = useState({ filepreview: null });
+//   const [history, setHistory] = useState([]);
+//   const [isSold, setIsSold] = useState(false);
+//   const [loading, setLoading] = useState(true);
+//   const [error, setError] = useState('');
+
+//   const location = useLocation();
+//   const navigate = useNavigate();
+//   const params = useParams();
+
+//   const qrData = location.state?.qrData;
+//   const urlSerialNumber = params.serialNumber;
+
+//   // Load data when QR is scanned or accessed directly
+//   useEffect(() => {
+//     if (qrData) {
+//       handleScan(qrData);
+//     } else if (urlSerialNumber) {
+//       handleDirectAccess(urlSerialNumber);
+//     }
+//   }, [qrData, urlSerialNumber]);
+
+//   const getImage = async (imageName) => {
+//     if (imageName && imageName !== '') {
+//       setImage({
+//         filepreview: `http://localhost:5000/file/product/${imageName}`
+//       });
+//     } else {
+//       setImage({ filepreview: null });
+//     }
+//   };
+
+//   const handleDirectAccess = async (serial) => {
+//     setLoading(true);
+//     setError('');
+    
+//     // Clean serial number - remove quotes and extra characters
+//     const cleanSerial = cleanSerialNumber(serial);
+//     setSerialNumber(cleanSerial);
+    
+//     try {
+//       const { ethereum } = window;
+//       if (!ethereum) {
+//         throw new Error("MetaMask not found. Please install MetaMask.");
+//       }
+      
+//       const provider = new ethers.providers.Web3Provider(ethereum);
+//       const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, provider);
+      
+//       console.log('Fetching product with serial:', cleanSerial);
+//       const product = await contract.getProduct(cleanSerial);
+//       console.log('Product data received:', product);
+      
+//       populateProductData(product);
+//     } catch (error) {
+//       console.error("Direct Access Error:", error);
+//       setError(`Failed to load product: ${error.message}`);
+//       setLoading(false);
+//     }
+//   };
+
+//   const handleScan = async (qrData) => {
+//     setLoading(true);
+//     setError('');
+    
+//     try {
+//       let serial = null;
+
+//       console.log('QR Data received:', qrData);
+
+//       // Handle QR data with digital verification (contract, serialNumber, signature)
+//       if (typeof qrData === 'string') {
+//         try {
+//           // Try to parse as JSON first (for digital verification format)
+//           const parsed = JSON.parse(qrData);
+//           console.log('Parsed QR JSON:', parsed);
+          
+//           // Check if it has digital verification format
+//           if (parsed.contract && parsed.serialNumber && parsed.signature) {
+//             // Verify contract address matches
+//             if (parsed.contract.toLowerCase() === CONTRACT_ADDRESS.toLowerCase()) {
+//               serial = parsed.serialNumber;
+//               console.log('Digital verification QR detected, serial:', serial);
+//             } else {
+//               throw new Error("Contract address mismatch in QR code");
+//             }
+//           } else if (parsed.serialNumber) {
+//             serial = parsed.serialNumber;
+//           } else if (parsed.serial) {
+//             serial = parsed.serial;
+//           } else {
+//             throw new Error("Invalid QR format - missing serial number");
+//           }
+//         } catch (parseError) {
+//           // If not JSON, try comma-separated format
+//           if (qrData.includes(',')) {
+//             const parts = qrData.split(',');
+//             if (parts.length >= 2) {
+//               const [contractAddress, serialNum] = parts;
+//               if (contractAddress.toLowerCase() === CONTRACT_ADDRESS.toLowerCase()) {
+//                 serial = serialNum;
+//               } else {
+//                 throw new Error("Invalid contract address in QR code");
+//               }
+//             } else {
+//               throw new Error("Invalid comma-separated QR format");
+//             }
+//           } else {
+//             // Use as direct serial number
+//             serial = qrData;
+//           }
+//         }
+//       } else if (typeof qrData === 'object') {
+//         if (qrData.serialNumber) {
+//           serial = qrData.serialNumber;
+//         } else if (qrData.serial) {
+//           serial = qrData.serial;
+//         }
+//       }
+
+//       if (!serial) {
+//         throw new Error("Serial number not found in QR code");
+//       }
+
+//       // Clean the serial number
+//       const cleanSerial = cleanSerialNumber(serial);
+//       console.log('Clean serial number:', cleanSerial);
+//       setSerialNumber(cleanSerial);
+
+//       const { ethereum } = window;
+//       if (!ethereum) {
+//         throw new Error("MetaMask not found. Please install MetaMask.");
+//       }
+
+//       const provider = new ethers.providers.Web3Provider(ethereum);
+//       const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, provider);
+      
+//       console.log('Fetching product with serial:', cleanSerial);
+//       const product = await contract.getProduct(cleanSerial);
+//       console.log('Product data received:', product);
+      
+//       populateProductData(product);
+//     } catch (error) {
+//       console.error("QR Scan Error:", error);
+//       setError(`Failed to scan QR: ${error.message}`);
+//       setLoading(false);
+//     }
+//   };
+
+//   // Helper function to clean serial number
+//   const cleanSerialNumber = (serial) => {
+//     if (!serial) return '';
+    
+//     let cleaned = serial.toString();
+    
+//     // Remove quotes
+//     cleaned = cleaned.replace(/['"]/g, '');
+    
+//     // Remove "serialNumber:" prefix if present
+//     cleaned = cleaned.replace(/serialNumber:/gi, '');
+    
+//     // Remove contract address if accidentally included
+//     if (cleaned.includes('0x67333426207CaFD285E178163c43c600127BBEb7')) {
+//       cleaned = cleaned.replace('0x67333426207CaFD285E178163c43c600127BBEb7', '').replace(/[,\-_]/g, '');
+//     }
+    
+//     // Trim whitespace
+//     cleaned = cleaned.trim();
+    
+//     return cleaned;
+//   };
+
+//   const populateProductData = (product) => {
+//     try {
+//       console.log('Populating product data:', product);
+      
+//       // Check if product exists and has data
+//       if (!product || product.length === 0) {
+//         throw new Error("Product not found or has no data");
+//       }
+      
+//       // Based on your smart contract return order:
+//       // 0: serialRet, 1: nameRet, 2: brandRet, 3: descriptionRet, 
+//       // 4: imageRet, 5: manufacturerRet, 6: historyRet
+      
+//       const serialRet = product[0] || '';
+//       const productName = product[1] || 'Unknown Product';
+//       const productBrand = product[2] || 'Unknown Brand';
+//       const productDescription = product[3] ? product[3].replace(/;/g, ',') : 'No description available';
+//       const productImage = product[4] || '';
+//       const manufacturerAddress = product[5] || '';
+//       const productHistory = product[6] || [];
+      
+//       console.log('Extracted data:', {
+//         serial: serialRet,
+//         name: productName,
+//         brand: productBrand,
+//         description: productDescription,
+//         image: productImage,
+//         manufacturer: manufacturerAddress,
+//         historyLength: productHistory.length
+//       });
+      
+//       setName(productName);
+//       setBrand(productBrand);
+//       setDescription(productDescription);
+      
+//       // Handle image
+//       if (productImage && productImage !== '') {
+//         getImage(productImage);
+//       } else {
+//         setImage({ filepreview: null });
+//       }
+
+//       // Handle history - productHistory should be an array of structs
+//       if (productHistory && Array.isArray(productHistory) && productHistory.length > 0) {
+//         console.log('Processing history:', productHistory);
+        
+//         const hist = productHistory.map((entry, index) => {
+//           console.log(`History entry ${index}:`, entry);
+          
+//           // Each entry should be a struct with properties
+//           // Adjust these indices based on your ProductHistory struct
+//           const actor = entry.actor || entry[0] || 'Unknown Actor';
+//           const location = entry.location || entry[1] || 'Unknown Location';
+//           const timestamp = entry.timestamp || entry[2] || 0;
+//           const isSoldFlag = entry.isSold || entry[3] || false;
+          
+//           // Clean location if it has semicolons
+//           const cleanLocation = typeof location === 'string' ? location.replace(/;/g, ',') : location;
+          
+//           if (isSoldFlag) {
+//             setIsSold(true);
+//           }
+          
+//           return { 
+//             actor, 
+//             location: cleanLocation, 
+//             timestamp: Number(timestamp) 
+//           };
+//         });
+        
+//         console.log('Processed history:', hist);
+//         setHistory(hist);
+//       } else {
+//         console.log('No history data found or empty array');
+//         setHistory([]);
+//       }
+      
+//       setLoading(false);
+//       setError('');
+//     } catch (error) {
+//       console.error('Error populating product data:', error);
+//       setError(`Error loading product data: ${error.message}`);
+//       setLoading(false);
+//     }
+//   };
+
+//   const handleBack = () => navigate(-1);
+
+//   const handleUpdateProduct = () => {
+//     // Navigate to update product page with clean serial number
+//     navigate(`/update-product/${serialNumber}`);
+//   };
+
+//   return (
+//     <Box sx={{
+//       backgroundImage: `url(${bgImg})`,
+//       minHeight: "100vh",
+//       backgroundSize: 'cover',
+//       paddingTop: "5%",
+//       paddingBottom: "5%",
+//     }}>
+//       <Paper elevation={3} sx={{
+//         maxWidth: 600,
+//         margin: "auto",
+//         padding: 4,
+//         backgroundColor: "#f0f4fa"
+//       }}>
+//         <Typography variant="h4" align="center" gutterBottom>
+//           Product Details
+//         </Typography>
+
+//         {loading ? (
+//           <Typography align="center" sx={{ mt: 5, mb: 5 }}>
+//             Loading product details...
+//           </Typography>
+//         ) : error ? (
+//           <Box sx={{ textAlign: 'center', mt: 3, mb: 3 }}>
+//             <Typography color="error" variant="h6">
+//               {error}
+//             </Typography>
+//             <Button variant="outlined" onClick={handleBack} sx={{ mt: 2 }}>
+//               Go Back
+//             </Button>
+//           </Box>
+//         ) : (
+//           <>
+//             <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 4 }}>
+//               <Avatar 
+//                 alt={name} 
+//                 src={image.filepreview} 
+//                 sx={{ width: 100, height: 100, marginRight: 2 }}
+//               >
+//                 {!image.filepreview && name ? name.charAt(0).toUpperCase() : 'P'}
+//               </Avatar>
+//               <Box>
+//                 <Typography variant="h6">{name}</Typography>
+//                 <Typography>Serial Number: {serialNumber}</Typography>
+//                 <Typography>Description: {description}</Typography>
+//                 <Typography>Brand: {brand}</Typography>
+//               </Box>
+//             </Box>
+
+//             <Typography variant="h5" align="center" gutterBottom>
+//               Product History
+//             </Typography>
+            
+//             <Timeline position="alternate">
+//               {history.length === 0 ? (
+//                 <Typography align="center" sx={{ mt: 2 }}>
+//                   No history available for this product.
+//                 </Typography>
+//               ) : (
+//                 history.map((item, index) => (
+//                   <TimelineItem key={index}>
+//                     <TimelineOppositeContent color="textSecondary">
+//                       {item.timestamp > 0 ? 
+//                         dayjs(item.timestamp * 1000).format('DD MMM YYYY - hh:mm A') : 
+//                         'Unknown Date'
+//                       }
+//                     </TimelineOppositeContent>
+//                     <TimelineSeparator>
+//                       <TimelineDot />
+//                       {index !== history.length - 1 && <TimelineConnector />}
+//                     </TimelineSeparator>
+//                     <TimelineContent>
+//                       <Typography>Actor: {item.actor}</Typography>
+//                       <Typography>Location: {item.location}</Typography>
+//                     </TimelineContent>
+//                   </TimelineItem>
+//                 ))
+//               )}
+//             </Timeline>
+
+//             <Typography variant="body2" align="center" sx={{ mt: 3 }}>
+//               Product Sold: <strong>{isSold ? 'Yes' : 'No'}</strong>
+//             </Typography>
+
+//             <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, mt: 3 }}>
+//               <Button variant="contained" onClick={handleBack}>
+//                 Back
+//               </Button>
+//               <Button variant="contained" color="primary" onClick={handleUpdateProduct}>
+//                 Update Product
+//               </Button>
+//             </Box>
+//           </>
+//         )}
+//       </Paper>
+//     </Box>
+//   );
+// };
+
+// export default Product;
 
 
 import { Box, Paper, Avatar, Typography, Button } from '@mui/material';
@@ -913,12 +773,12 @@ import TimelineDot from '@mui/lab/TimelineDot';
 import TimelineOppositeContent from '@mui/lab/TimelineOppositeContent';
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { ethers } from 'ethers';
 import abi from '../../utils/Truemark.json';
 import bgImg from '../../img/bg.png';
 
-const CONTRACT_ADDRESS = '0xF89Dd0FF002179340542D03FfFd7CcBaa4972Ae6';
+const CONTRACT_ADDRESS = '0xff640E131188aAf6E898a53E7969054327c7A5aA';
 const CONTRACT_ABI = abi.abi;
 
 const Product = () => {
@@ -930,68 +790,267 @@ const Product = () => {
   const [image, setImage] = useState({ filepreview: null });
   const [history, setHistory] = useState([]);
   const [isSold, setIsSold] = useState(false);
-  const [loading, setLoading] = useState(true); // <-- Added loading state
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   const location = useLocation();
   const navigate = useNavigate();
-  const qrData = location.state?.qrData;
+  const params = useParams();
 
+  const qrData = location.state?.qrData;
+  const urlSerialNumber = params.serialNumber;
+
+  // Load data when QR is scanned or accessed directly
   useEffect(() => {
     if (qrData) {
       handleScan(qrData);
+    } else if (urlSerialNumber) {
+      handleDirectAccess(urlSerialNumber);
     }
-  }, [qrData]);
+  }, [qrData, urlSerialNumber]);
 
   const getImage = async (imageName) => {
-    setImage({
-      filepreview: `http://localhost:5000/file/product/${imageName}`
-    });
+    if (imageName && imageName !== '') {
+      setImage({
+        filepreview: `http://localhost:5000/file/product/${imageName}`
+      });
+    } else {
+      setImage({ filepreview: null });
+    }
+  };
+
+  const handleDirectAccess = async (serial) => {
+    setLoading(true);
+    setError('');
+    
+    // Clean serial number - remove quotes and extra characters
+    const cleanSerial = cleanSerialNumber(serial);
+    setSerialNumber(cleanSerial);
+    
+    try {
+      const { ethereum } = window;
+      if (!ethereum) {
+        throw new Error("MetaMask not found. Please install MetaMask.");
+      }
+      
+      const provider = new ethers.providers.Web3Provider(ethereum);
+      const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, provider);
+      
+      console.log('Fetching product with serial:', cleanSerial);
+      const product = await contract.getProduct(cleanSerial);
+      console.log('Product data received:', product);
+      
+      populateProductData(product);
+    } catch (error) {
+      console.error("Direct Access Error:", error);
+      setError(`Failed to load product: ${error.message}`);
+      setLoading(false);
+    }
   };
 
   const handleScan = async (qrData) => {
-    setLoading(true); // Start loading
-    const [contractAddress, serial] = qrData.split(',');
-    setSerialNumber(serial);
+    setLoading(true);
+    setError('');
+    
+    try {
+      let serial = null;
 
-    if (contractAddress === CONTRACT_ADDRESS) {
-      try {
-        const { ethereum } = window;
-        if (ethereum) {
-          const provider = new ethers.providers.Web3Provider(ethereum);
-          const signer = provider.getSigner();
-          const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
-          const product = await contract.getProduct(serial);
-          populateProductData(product);
+      console.log('QR Data received:', qrData);
+
+      // Handle QR data with digital verification (contract, serialNumber, signature)
+      if (typeof qrData === 'string') {
+        try {
+          // Try to parse as JSON first (for digital verification format)
+          const parsed = JSON.parse(qrData);
+          console.log('Parsed QR JSON:', parsed);
+          
+          // Check if it has digital verification format
+          if (parsed.contract && parsed.serialNumber && parsed.signature) {
+            // Verify contract address matches
+            if (parsed.contract.toLowerCase() === CONTRACT_ADDRESS.toLowerCase()) {
+              serial = parsed.serialNumber;
+              console.log('Digital verification QR detected, serial:', serial);
+            } else {
+              throw new Error("Contract address mismatch in QR code");
+            }
+          } else if (parsed.serialNumber) {
+            serial = parsed.serialNumber;
+          } else if (parsed.serial) {
+            serial = parsed.serial;
+          } else {
+            throw new Error("Invalid QR format - missing serial number");
+          }
+        } catch (parseError) {
+          // If not JSON, try comma-separated format
+          if (qrData.includes(',')) {
+            const parts = qrData.split(',');
+            if (parts.length >= 2) {
+              const [contractAddress, serialNum] = parts;
+              if (contractAddress.toLowerCase() === CONTRACT_ADDRESS.toLowerCase()) {
+                serial = serialNum;
+              } else {
+                throw new Error("Invalid contract address in QR code");
+              }
+            } else {
+              throw new Error("Invalid comma-separated QR format");
+            }
+          } else {
+            // Use as direct serial number
+            serial = qrData;
+          }
         }
-      } catch (error) {
-        console.error(error);
-        setLoading(false);
+      } else if (typeof qrData === 'object') {
+        if (qrData.serialNumber) {
+          serial = qrData.serialNumber;
+        } else if (qrData.serial) {
+          serial = qrData.serial;
+        }
       }
+
+      if (!serial) {
+        throw new Error("Serial number not found in QR code");
+      }
+
+      // Clean the serial number
+      const cleanSerial = cleanSerialNumber(serial);
+      console.log('Clean serial number:', cleanSerial);
+      setSerialNumber(cleanSerial);
+
+      const { ethereum } = window;
+      if (!ethereum) {
+        throw new Error("MetaMask not found. Please install MetaMask.");
+      }
+
+      const provider = new ethers.providers.Web3Provider(ethereum);
+      const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, provider);
+      
+      console.log('Fetching product with serial:', cleanSerial);
+      const product = await contract.getProduct(cleanSerial);
+      console.log('Product data received:', product);
+      
+      populateProductData(product);
+    } catch (error) {
+      console.error("QR Scan Error:", error);
+      setError(`Failed to scan QR: ${error.message}`);
+      setLoading(false);
     }
   };
 
-  const populateProductData = (product) => {
-    setName(product[0]);
-    setBrand(product[1]);
-    setDescription(product[2]?.replace(/;/g, ','));
-    getImage(product[4]);
-
-    const hist = product[5].map((entry) => {
-      const actor = entry[1];
-      const location = entry[2]?.replace(/;/g, ',');
-      const timestamp = Number(entry[3]);
-      const isSoldFlag = entry[4];
-
-      if (isSoldFlag) setIsSold(true);
-
-      return { actor, location, timestamp };
-    });
-
-    setHistory(hist);
-    setLoading(false); // End loading
+  // Helper function to clean serial number
+  const cleanSerialNumber = (serial) => {
+    if (!serial) return '';
+    
+    let cleaned = serial.toString();
+    
+    // Remove quotes
+    cleaned = cleaned.replace(/['"]/g, '');
+    
+    // Remove "serialNumber:" prefix if present
+    cleaned = cleaned.replace(/serialNumber:/gi, '');
+    
+    // Remove contract address if accidentally included
+    if (cleaned.includes('0xff640E131188aAf6E898a53E7969054327c7A5aA')) {
+      cleaned = cleaned.replace('0xff640E131188aAf6E898a53E7969054327c7A5aA', '').replace(/[,\-_]/g, '');
+    }
+    
+    // Trim whitespace
+    cleaned = cleaned.trim();
+    
+    return cleaned;
   };
 
-  const handleBack = () => navigate(-2);
+  const populateProductData = (product) => {
+    try {
+      console.log('Populating product data:', product);
+      
+      // Check if product exists and has data
+      if (!product || product.length === 0) {
+        throw new Error("Product not found or has no data");
+      }
+      
+      // Based on your smart contract return order:
+      // 0: serialRet, 1: nameRet, 2: brandRet, 3: descriptionRet, 
+      // 4: imageRet, 5: manufacturerRet, 6: historyRet
+      
+      const serialRet = product[0] || '';
+      const productName = product[1] || 'Unknown Product';
+      const productBrand = product[2] || 'Unknown Brand';
+      const productDescription = product[3] ? product[3].replace(/;/g, ',') : 'No description available';
+      const productImage = product[4] || '';
+      const manufacturerAddress = product[5] || '';
+      const productHistory = product[6] || [];
+      
+      console.log('Extracted data:', {
+        serial: serialRet,
+        name: productName,
+        brand: productBrand,
+        description: productDescription,
+        image: productImage,
+        manufacturer: manufacturerAddress,
+        historyLength: productHistory.length
+      });
+      
+      setName(productName);
+      setBrand(productBrand);
+      setDescription(productDescription);
+      
+      // Handle image
+      if (productImage && productImage !== '') {
+        getImage(productImage);
+      } else {
+        setImage({ filepreview: null });
+      }
+
+      // Handle history - productHistory should be an array of structs
+      if (productHistory && Array.isArray(productHistory) && productHistory.length > 0) {
+        console.log('Processing history:', productHistory);
+        
+        const hist = productHistory.map((entry, index) => {
+          console.log(`History entry ${index}:`, entry);
+          
+          // Each entry should be a struct with properties
+          // Adjust these indices based on your ProductHistory struct
+          const actor = entry.actor || entry[0] || 'Unknown Actor';
+          const location = entry.location || entry[1] || 'Unknown Location';
+          const timestamp = entry.timestamp || entry[2] || 0;
+          const isSoldFlag = entry.isSold || entry[3] || false;
+          
+          // Clean location if it has semicolons
+          const cleanLocation = typeof location === 'string' ? location.replace(/;/g, ',') : location;
+          
+          if (isSoldFlag) {
+            setIsSold(true);
+          }
+          
+          return { 
+            actor, 
+            location: cleanLocation, 
+            timestamp: Number(timestamp) 
+          };
+        });
+        
+        console.log('Processed history:', hist);
+        setHistory(hist);
+      } else {
+        console.log('No history data found or empty array');
+        setHistory([]);
+      }
+      
+      setLoading(false);
+      setError('');
+    } catch (error) {
+      console.error('Error populating product data:', error);
+      setError(`Error loading product data: ${error.message}`);
+      setLoading(false);
+    }
+  };
+
+  const handleBack = () => navigate(-1);
+
+  // const handleUpdateProduct = () => {
+  //   // Navigate to update product page with clean serial number
+  //   navigate(`/update-product/${serialNumber}`);
+  // };
 
   return (
     <Box sx={{
@@ -1007,14 +1066,33 @@ const Product = () => {
         padding: 4,
         backgroundColor: "#f0f4fa"
       }}>
-        <Typography variant="h4" align="center" gutterBottom>Product Details</Typography>
+        <Typography variant="h4" align="center" gutterBottom>
+          Product Details
+        </Typography>
 
         {loading ? (
-          <Typography align="center" sx={{ mt: 5, mb: 5 }}>Loading product details...</Typography>
+          <Typography align="center" sx={{ mt: 5, mb: 5 }}>
+            Loading product details...
+          </Typography>
+        ) : error ? (
+          <Box sx={{ textAlign: 'center', mt: 3, mb: 3 }}>
+            <Typography color="error" variant="h6">
+              {error}
+            </Typography>
+            <Button variant="outlined" onClick={handleBack} sx={{ mt: 2 }}>
+              Go Back
+            </Button>
+          </Box>
         ) : (
           <>
             <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 4 }}>
-              <Avatar alt={name} src={image.filepreview} sx={{ width: 100, height: 100, marginRight: 2 }} />
+              <Avatar 
+                alt={name} 
+                src={image.filepreview} 
+                sx={{ width: 100, height: 100, marginRight: 2 }}
+              >
+                {!image.filepreview && name ? name.charAt(0).toUpperCase() : 'P'}
+              </Avatar>
               <Box>
                 <Typography variant="h6">{name}</Typography>
                 <Typography>Serial Number: {serialNumber}</Typography>
@@ -1023,31 +1101,48 @@ const Product = () => {
               </Box>
             </Box>
 
-            <Typography variant="h5" align="center" gutterBottom>Product History</Typography>
+            <Typography variant="h5" align="center" gutterBottom>
+              Product History
+            </Typography>
+            
             <Timeline position="alternate">
-              {history.map((item, index) => (
-                <TimelineItem key={index}>
-                  <TimelineOppositeContent color="textSecondary">
-                    {dayjs(item.timestamp * 1000).format('DD MMM YYYY - hh:mm A')}
-                  </TimelineOppositeContent>
-                  <TimelineSeparator>
-                    <TimelineDot />
-                    {index !== history.length - 1 && <TimelineConnector />}
-                  </TimelineSeparator>
-                  <TimelineContent>
-                    <Typography>Actor: {item.actor}</Typography>
-                    <Typography>Location: {item.location}</Typography>
-                  </TimelineContent>
-                </TimelineItem>
-              ))}
+              {history.length === 0 ? (
+                <Typography align="center" sx={{ mt: 2 }}>
+                  No history available for this product.
+                </Typography>
+              ) : (
+                history.map((item, index) => (
+                  <TimelineItem key={index}>
+                    <TimelineOppositeContent color="textSecondary">
+                      {item.timestamp > 0 ? 
+                        dayjs(item.timestamp * 1000).format('DD MMM YYYY - hh:mm A') : 
+                        'Unknown Date'
+                      }
+                    </TimelineOppositeContent>
+                    <TimelineSeparator>
+                      <TimelineDot />
+                      {index !== history.length - 1 && <TimelineConnector />}
+                    </TimelineSeparator>
+                    <TimelineContent>
+                      <Typography>Actor: {item.actor}</Typography>
+                      <Typography>Location: {item.location}</Typography>
+                    </TimelineContent>
+                  </TimelineItem>
+                ))
+              )}
             </Timeline>
 
             <Typography variant="body2" align="center" sx={{ mt: 3 }}>
               Product Sold: <strong>{isSold ? 'Yes' : 'No'}</strong>
             </Typography>
 
-            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
-              <Button variant="contained" onClick={handleBack}>Back</Button>
+            <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, mt: 3 }}>
+              <Button variant="contained" onClick={handleBack}>
+                Back
+              </Button>
+              {/* <Button variant="contained" color="primary" onClick={handleUpdateProduct}>
+                Update Product
+              </Button> */}
             </Box>
           </>
         )}

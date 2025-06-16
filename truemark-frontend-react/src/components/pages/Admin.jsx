@@ -42,7 +42,7 @@ import { useState } from 'react';
 import { ethers } from 'ethers';
 import abi from '../../utils/Truemark.json';
 
-const CONTRACT_ADDRESS = '0xF89Dd0FF002179340542D03FfFd7CcBaa4972Ae6'; // Replace with your deployed contract address
+const CONTRACT_ADDRESS = '0xff640E131188aAf6E898a53E7969054327c7A5aA'; // Replace with your deployed contract address
 
 const Admin = () => {
     const [address, setAddress] = useState('');

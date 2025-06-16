@@ -153,7 +153,9 @@ const FakeProduct = () => {
                         textAlign: "center", marginBottom: "5%", marginTop: "5%",
                     }}
                 >
-                    The serial number <strong>{qrData}</strong> you scanned does not match any registered product. This means the product could be counterfeit.
+                    The serial number you scanned does not match any registered product. This means the product could be counterfeit.
+                     {/* <strong>{qrData}</strong> */}
+                      
                 </Typography>
 
                 <Typography

@@ -1,5 +1,6 @@
- {
- "abi": [
+{
+
+  "abi": [
     {
       "inputs": [],
       "stateMutability": "nonpayable",
@@ -87,28 +88,33 @@
       "outputs": [
         {
           "internalType": "string",
-          "name": "",
+          "name": "serialRet",
           "type": "string"
         },
         {
           "internalType": "string",
-          "name": "",
+          "name": "nameRet",
           "type": "string"
         },
         {
           "internalType": "string",
-          "name": "",
+          "name": "brandRet",
           "type": "string"
         },
         {
           "internalType": "string",
-          "name": "",
+          "name": "descriptionRet",
           "type": "string"
         },
         {
           "internalType": "string",
-          "name": "",
+          "name": "imageRet",
           "type": "string"
+        },
+        {
+          "internalType": "address",
+          "name": "manufacturerRet",
+          "type": "address"
         },
         {
           "components": [
@@ -139,7 +145,7 @@
             }
           ],
           "internalType": "struct Truemark.ProductHistory[]",
-          "name": "",
+          "name": "historyRet",
           "type": "tuple[]"
         }
       ],
@@ -160,6 +166,30 @@
           "internalType": "string",
           "name": "",
           "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "_serialNumber",
+          "type": "string"
+        }
+      ],
+      "name": "getSigInfo",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "manufacturerAddr",
+          "type": "address"
+        },
+        {
+          "internalType": "bytes",
+          "name": "sig",
+          "type": "bytes"
         }
       ],
       "stateMutability": "view",
@@ -201,17 +231,17 @@
       "inputs": [
         {
           "internalType": "string",
+          "name": "_serialNumber",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
           "name": "_name",
           "type": "string"
         },
         {
           "internalType": "string",
           "name": "_brand",
-          "type": "string"
-        },
-        {
-          "internalType": "string",
-          "name": "_serialNumber",
           "type": "string"
         },
         {
@@ -238,6 +268,16 @@
           "internalType": "string",
           "name": "_timestamp",
           "type": "string"
+        },
+        {
+          "internalType": "bool",
+          "name": "_isSold",
+          "type": "bool"
+        },
+        {
+          "internalType": "bytes",
+          "name": "_signature",
+          "type": "bytes"
         }
       ],
       "name": "registerProduct",
