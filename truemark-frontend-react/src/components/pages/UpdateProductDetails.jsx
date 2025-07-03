@@ -2271,15 +2271,30 @@ const UpdateProductDetails = () => {
     });
   };
 
+  // const getUsername = async () => {
+  //   try {
+  //     const res = await axios.get(`http://localhost:5000/profile/${auth.user}`);
+  //     console.log(JSON.stringify(res?.data[0]));
+  //     setCurrName(res?.data[0].name);
+  //   } catch (error) {
+  //     console.error("Error fetching username:", error);
+  //   }
+  // };
+
   const getUsername = async () => {
-    try {
-      const res = await axios.get(`http://localhost:5000/profile/${auth.user}`);
-      console.log(JSON.stringify(res?.data[0]));
-      setCurrName(res?.data[0].name);
-    } catch (error) {
-      console.error("Error fetching username:", error);
+  try {
+    const res = await axios.get(`http://localhost:5000/profile/${auth.user}`);
+    if (res.data && res.data.name) {
+      setCurrName(res.data.name);
+    } else if (Array.isArray(res.data) && res.data.length > 0 && res.data[0].name) {
+      setCurrName(res.data[0].name);
+    } else {
+      console.warn("Unexpected profile response:", res.data);
     }
-  };
+  } catch (error) {
+    console.error("Error fetching username:", error);
+  }
+};
 
   const updateProduct = async (e) => {
     e.preventDefault();
