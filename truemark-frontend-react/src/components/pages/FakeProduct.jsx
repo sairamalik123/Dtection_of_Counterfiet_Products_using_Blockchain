@@ -107,7 +107,7 @@ const FakeProduct = () => {
     const qrData = location.state?.qrData; // Get the scanned serial number
 
     const handleBack = () => {
-        navigate(-2); // Navigate two steps back
+        navigate(-1); // Navigate two steps back
     }
 
     return (
@@ -189,7 +189,7 @@ const FakeProduct = () => {
                             marginTop: "5%",
                         }}
                     >
-                        Back
+                        Back to Home
                     </Button>
                 </Box>
 

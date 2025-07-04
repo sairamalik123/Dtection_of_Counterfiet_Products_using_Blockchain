@@ -150,7 +150,7 @@ const AuthenticProduct = () => {
     }
   };
 
-  const handleBack = () => navigate(-1);
+  const handleBack = () => navigate(-2);
 
   if (loading) {
     return (
@@ -252,7 +252,7 @@ const AuthenticProduct = () => {
 
         <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
           <Button variant="contained" onClick={handleBack}>
-            Back
+            Back to Home
           </Button>
         </Box>
       </Paper>

@@ -726,7 +726,7 @@ const handleSubmit = (e) => {
     });
 };
     const handleBack = () => {
-        navigate(-1);
+        navigate(-2);
     };
 
     if (loading) {
