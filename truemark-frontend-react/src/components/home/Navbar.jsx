@@ -348,11 +348,9 @@
 // export default Navbar;
 
 
-
 import * as React from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import MenuIcon from "@mui/icons-material/Menu";
 import VerifiedIcon from "@mui/icons-material/Verified";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import ListAltIcon from "@mui/icons-material/ListAlt";
@@ -361,88 +359,11 @@ import ContactsIcon from "@mui/icons-material/Contacts";
 import logoImg from "../../img/logo.png";
 import { Container } from "@mui/system";
 import CustomButton from "./CustomButton";
-import {
-  Drawer,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  styled,
-} from "@mui/material";
+import { styled } from "@mui/material";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
 export const Navbar = () => {
-  const [mobileMenu, setMobileMenu] = useState({ left: false });
-
-  const toggleDrawer = (anchor, open) => (event) => {
-    if (
-      event.type === "keydown" &&
-      (event.key === "Tab" || event.key === "Shift")
-    ) {
-      return;
-    }
-    setMobileMenu({ ...mobileMenu, [anchor]: open });
-  };
-
-  const list = (anchor) => (
-    <Box
-      sx={{ width: anchor === "top" || anchor === "bottom" ? "auto" : 250 }}
-      role="presentation"
-      onClick={toggleDrawer(anchor, false)}
-      onKeyDown={toggleDrawer(anchor, false)}
-    >
-      <List>
-        {[
-          { text: "Dashboard", icon: <DashboardIcon /> },
-          { text: "Verify Product", icon: <VerifiedIcon /> },
-          { text: "Add Product", icon: <AddCircleIcon /> },
-          { text: "Listed Products", icon: <ListAltIcon /> },
-          { text: "Contact", icon: <ContactsIcon /> },
-        ].map(({ text, icon }) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>{icon}</ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-    </Box>
-  );
-
-  const NavLink = styled(Typography)(({ theme }) => ({
-    margin: "3%",
-    fontSize: "14px",
-    color: "#4F5361",
-    fontWeight: "bold",
-    cursor: "pointer",
-    "&:hover": {
-      color: "#1e3a8a",
-    },
-  }));
-
-  const NavbarLinksBox = styled(Box)(({ theme }) => ({
-    marginRight: "12%",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: theme.spacing(3),
-    [theme.breakpoints.down("md")]: {
-      display: "none",
-    },
-  }));
-
-  const CustomMenuIcon = styled(MenuIcon)(({ theme }) => ({
-    cursor: "pointer",
-    display: "none",
-    marginRight: theme.spacing(2),
-    [theme.breakpoints.down("md")]: {
-      display: "block",
-    },
-  }));
-
   const NavbarContainer = styled(Container)(({ theme }) => ({
     display: "flex",
     alignItems: "center",
@@ -456,9 +377,6 @@ export const Navbar = () => {
   const NavbarLogo = styled("img")(({ theme }) => ({
     width: "180px",
     cursor: "pointer",
-    [theme.breakpoints.down("md")]: {
-      display: "none",
-    },
   }));
 
   return (
@@ -472,24 +390,8 @@ export const Navbar = () => {
         }}
       >
         <Box sx={{ display: "flex", alignItems: "center" }}>
-          <CustomMenuIcon onClick={toggleDrawer("left", true)} />
-          <Drawer
-            anchor="left"
-            open={mobileMenu["left"]}
-            onClose={toggleDrawer("left", false)}
-          >
-            {list("left")}
-          </Drawer>
           <NavbarLogo src={logoImg} alt="TrueMark Logo" />
         </Box>
-
-        {/* <NavbarLinksBox>
-          <NavLink variant="body2">Dashboard</NavLink>
-          <NavLink variant="body2">Verify Product</NavLink>
-          <NavLink variant="body2">Add Product</NavLink>
-          <NavLink variant="body2">Listed</NavLink>
-          <NavLink variant="body2">Contact</NavLink>
-        </NavbarLinksBox> */}
       </Box>
 
       <Box

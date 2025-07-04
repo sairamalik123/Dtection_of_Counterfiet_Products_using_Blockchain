@@ -264,7 +264,7 @@
 //                 "https://pirg.org/edfund/resources/counterfeit-products-how-to-tell-whether-you-bought-one/#:~:text=Scan%20the%20Universal%20Product%20Code,product%20could%20be%20a%20counterfeit.",
 //                 "_blank"
 //               )
-//             } 
+//             }
 //           >
 //             <Typography
 //               variant="body2"
@@ -368,7 +368,6 @@
 // };
 
 // export default Guide;
-
 
 import { Box, Button, styled, Typography } from "@mui/material";
 import React from "react";
@@ -483,12 +482,18 @@ const Guide = () => {
             lineHeight: 1.8,
           }}
         >
-          Every product has a unique digital identity created by our
-          blockchain-based counterfeit detection system. This ID is immutable,
-          stored securely on-chain. Customers can verify product legitimacy by
-          scanning a QR code or entering the digital ID. Our system ensures
-          safety, trust, and transparency by blocking fake entries using the
-          power of decentralized technology.
+          Our platform uses blockchain technology to ensure product authenticity
+          and traceability. When a user scans the QR code printed on a product,
+          the system first checks whether the product is registered and verified
+          on the blockchain using a secure digital signature. If the product is
+          found, the user is prompted to enter a unique One-Time Key (OTK)
+          printed on the packaging. This adds an extra layer of security. If the
+          key is valid and unused, and the user's MetaMask wallet is connected,
+          the system grants access to full product details — including brand,
+          description, registration date, location, and complete supply chain
+          history (manufacturer, supplier, and retailer). If the product is not
+          on the blockchain or the OTK is incorrect or already used, the product
+          is flagged as counterfeit, and access to its details is denied.
         </Typography>
       </CustomBox>
 
