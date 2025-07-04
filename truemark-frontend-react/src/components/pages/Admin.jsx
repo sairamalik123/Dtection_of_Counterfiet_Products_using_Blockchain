@@ -1,39 +1,3 @@
-// import '../../css/Role.css'
-// import { LinkButton } from '../LinkButton';
-// import { Box, Button as Btn } from '@mui/material';
-// import LogoutIcon from '@mui/icons-material/Logout';
-
-// const Admin = () => {
-//     return (
-//         <div className="role-container">
-//             <div className="role-container-box">
-
-//                 <Box
-//                     sx={{                        
-//                         position: 'absolute',
-//                         top: 20,
-//                         right: 20,
-//                     }}
-//                 >
-//                     <Btn href="/login" endIcon={<LogoutIcon />}>Logout</Btn>                    
-//                 </Box>
-
-//                 <h2>Welcome:</h2>
-//                 <h1>ADMIN</h1>
-//                 <LinkButton to="/add-account" className="btns" buttonStyle='btn--long' buttonSize='btn--large'>Add Account</LinkButton>
-//                 <LinkButton to="/manage-account" className="btns" buttonStyle='btn--long' buttonSize='btn--large'>Manage Accounts</LinkButton>
-
-//             </div>
-//         </div>
-//     );
-// }
-
-// export default Admin;
-
-
-
-
-
 import '../../css/Role.css';
 import { LinkButton } from '../LinkButton';
 import { Box, Button as Btn, TextField, MenuItem, Typography } from '@mui/material';
@@ -42,7 +6,7 @@ import { useState } from 'react';
 import { ethers } from 'ethers';
 import abi from '../../utils/Truemark.json';
 
-const CONTRACT_ADDRESS = '0xff640E131188aAf6E898a53E7969054327c7A5aA'; // Replace with your deployed contract address
+const CONTRACT_ADDRESS = '0xff640E131188aAf6E898a53E7969054327c7A5aA';
 
 const Admin = () => {
     const [address, setAddress] = useState('');
@@ -72,24 +36,46 @@ const Admin = () => {
 
     return (
         <div className="role-container">
-            <div className="role-container-box">
+            <div className="role-container-box" style={{ backgroundColor: '#e3eefc' }}>
 
                 <Box sx={{ position: 'absolute', top: 20, right: 20 }}>
-                    <Btn href="/login" endIcon={<LogoutIcon />}>Logout</Btn>
+                    <Btn
+                        href="/login"
+                        endIcon={<LogoutIcon />}
+                        sx={{
+                            backgroundColor: '#0F1B4C',
+                            color: '#fff',
+                            textTransform: 'none',
+                            '&:hover': { backgroundColor: '#0c1631' }
+                        }}
+                    >
+                        Logout
+                    </Btn>
                 </Box>
-                {/* <h2>Welcome:</h2> */}
-                <h1>ADMIN</h1>
 
-                <LinkButton to="/add-account" className="btns" buttonStyle='btn--long' buttonSize='btn--large'>
+                <h1 className='adminstyle' style={{ color: '#0F1B4C'}}>ADMIN</h1>
+
+                <LinkButton
+                    to="/add-account"
+                    className="btns"
+                    buttonStyle='btn--long'
+                    buttonSize='btn--large'
+                >
                     Add Account
                 </LinkButton>
-                <LinkButton to="/manage-account" className="btns" buttonStyle='btn--long' buttonSize='btn--large'>
+                <LinkButton
+                    to="/manage-account"
+                    className="btns"
+                    buttonStyle='btn--long'
+                    buttonSize='btn--large'
+                >
                     Manage Accounts
                 </LinkButton>
 
-                {/* Role Assignment Form */}
                 <Box sx={{ mt: 1, width: '100%' }}>
-                    <Typography variant="h6" gutterBottom>Assign Role</Typography>
+                    <Typography variant="h6" gutterBottom sx={{ color: '#0F1B4C' }}>
+                        Assign Role
+                    </Typography>
                     <form onSubmit={handleAssignRole}>
                         <TextField
                             label="Wallet Address"
@@ -113,9 +99,22 @@ const Admin = () => {
                             <MenuItem value="2">Retailer</MenuItem>
                             <MenuItem value="3">Supplier</MenuItem>
                         </TextField>
-                        <Btn type="submit" variant="contained" color="primary" fullWidth>Assign Role</Btn>
+                        <Btn
+                            type="submit"
+                            variant="contained"
+                            fullWidth
+                            sx={{
+                                backgroundColor: '#0F1B4C',
+                                color: '#fff',
+                                mt: 2,
+                                mb: 4,
+                                '&:hover': { backgroundColor: '#0c1631' }
+                            }}
+                        >
+                            Assign Role
+                        </Btn>
+                     
                     </form>
-               
                 </Box>
 
             </div>

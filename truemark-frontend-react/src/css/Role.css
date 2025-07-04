@@ -1,3 +1,4 @@
+
 .role-container {
     background: url('../img/bg.png') center center/cover no-repeat;
     background-color: rgb(39, 50, 98);
@@ -13,7 +14,7 @@
 
 .role-container-box {
     width: 400px;
-    height: 500px;
+    height: 530px;
     background-color: #e3eefc;
     padding: 20px;
     border-radius: 2%;
@@ -52,6 +53,7 @@
 }
 
 .role-container-box>h2 {
+
     color: #193453;
     font-family: 'Gambetta', serif;
     font-weight: lighter;
@@ -81,4 +83,8 @@ form.role{
     flex-direction: column;
     align-items: center;
     justify-content: center;
+}
+
+.adminstyle {
+    margin-top: 22px;
 }
