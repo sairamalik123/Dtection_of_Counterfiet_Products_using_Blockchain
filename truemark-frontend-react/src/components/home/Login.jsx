@@ -73,7 +73,7 @@ export default function Login() {
                 backgroundSize: "cover",
                 backgroundPosition: "center",
                 backgroundRepeat: "no-repeat",
-                minHeight: "100vh",
+                minHeight: "94.6vh",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -91,7 +91,7 @@ export default function Login() {
                         display: "flex",
                         flexDirection: "column",
                         alignItems: "center",
-                        width: "100%",
+                        // width: "100%",
                     }}
                 >
                     <Typography
@@ -106,7 +106,7 @@ export default function Login() {
                             textAlign: 'center'
                         }}
                     >
-                        TRUEMARK
+                        TRUEMARK!
                     </Typography>
 
                     <Typography component="h2" variant="h6" gutterBottom sx={{ textAlign: 'center' }}>

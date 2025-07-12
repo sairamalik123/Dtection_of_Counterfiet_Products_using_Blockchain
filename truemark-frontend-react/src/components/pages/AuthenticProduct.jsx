@@ -150,7 +150,7 @@ const AuthenticProduct = () => {
     }
   };
 
-  const handleBack = () => navigate(-2);
+  const handleBack = () => navigate(-1);
 
   if (loading) {
     return (
